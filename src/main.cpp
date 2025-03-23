@@ -21,16 +21,16 @@ ThingsBoard tb(mqttClient, MAX_MESSAGE_SIZE);
 DHT20 dht20;
 
 void InitWiFi() {
-  Serial.print("Connecting to Wifi ...");
+  Serial.print("Connecting to WiFi ...");
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
-  Serial.println(); Serial.println("Connected to Wifi!");
+  Serial.println(); Serial.println("Connected to WiFi!");
 }
 
-void TaskWifi(void *pvParameters) {
+void TaskWiFi(void *pvParameters) {
   while(1) {
     if (WiFi.status() != WL_CONNECTED) {
       Serial.println("WiFi disconnected, attempting to reconnect ...");
@@ -40,7 +40,7 @@ void TaskWifi(void *pvParameters) {
   }
 }
 
-void TaskDTH20(void *pvParameters) {
+void TaskDHT20(void *pvParameters) {
   while(1) {
     dht20.read();
     vTaskDelay(1000);
@@ -72,8 +72,8 @@ void setup() {
   Wire.begin(GPIO_NUM_21, GPIO_NUM_22);
   dht20.begin();
   tb.connect(THINGSBOARD_SERVER, TOKEN, THINGSBOARD_PORT);
-  xTaskCreate(TaskWifi, "Wifi", 2048, NULL, 2, NULL);
-  xTaskCreate(TaskDTH20, "DTH20", 2048, NULL, 2, NULL);
+  xTaskCreate(TaskWiFi, "WiFi", 2048, NULL, 2, NULL);
+  xTaskCreate(TaskDHT20, "DHT20", 2048, NULL, 2, NULL);
   xTaskCreate(TaskTemperature, "Temperature", 2048, NULL, 2, NULL);
   xTaskCreate(TaskHumidity, "Humidity", 2048, NULL, 2, NULL);
 }
